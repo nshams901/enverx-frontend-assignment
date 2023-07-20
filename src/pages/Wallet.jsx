@@ -1,8 +1,16 @@
+import { Box } from '@mui/material'
 import React from 'react'
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import Card from '../components/Card';
 
 const Wallet = () => {
   return (
-    <div>Wallet</div>
+    <>
+      <Box>
+        <Card/>
+
+      </Box>
+    </>
   )
 }
 

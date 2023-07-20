@@ -6,10 +6,6 @@ import Wallet from './pages/Wallet'
 import { router } from './router'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const handleNav = () => {
-    console.log('CLIIIIIIIIIIII');
-  }
   return (
     <>
     
