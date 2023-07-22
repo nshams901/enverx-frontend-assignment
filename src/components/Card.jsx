@@ -6,10 +6,23 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import wallet from '../assets/wallet-pic.png'
+import { TextField } from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
-export default function Cards() {
+export default function Cards({ data }) {
+  const [state, setState] = React.useState({})
+  const { balanceInput, amount  } = state
+
+  const handleBalance = () => {
+    setState({ ...state, balanceInput: true })
+  }
+  const handleAmount = (e) => {
+    const { value } = e.target
+    setState({ ...state, amount: +value })
+  }
   return (
-    <Card sx={{ maxWidth: 345 , backgroundImage: 'linear-gradient(to right, #ff512f, #f09819);'}}>
+    <Card sx={{ maxWidth: 345, backgroundImage: 'linear-gradient(to right, #ff512f, #f09819);' }}>
       <CardMedia
         component="img"
         alt="green iguana"
@@ -18,14 +31,35 @@ export default function Cards() {
       />
       <CardContent>
         <Typography gutterBottom variant="h5" textAlign={'center'} component="div">
-          Balance <Button color='success' variant='contained'>$ 320</Button>
+          Balance <br />
+          {
+            balanceInput ?
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '1rem'}} >
+                <TextField
+                  type='number'
+                  value={ amount}
+                  onChange={handleAmount}
+                  inputProps={{
+                    style: { padding: '3px' }
+                  }}
+                  sx={{ width: 'fit-content', padding: '5px' }}
+                />
+                <ListItemIcon >
+                  <AddCircleIcon onClick= {() => setState({ ...state, balanceInput: false})}
+                   style={{ cursor: 'pointer'}} />
+                </ListItemIcon>
+
+              </div>
+              :
+              <Button onClick={handleBalance} color='success' variant='contained'>$ {(amount || 0) + (data || 0)}</Button>
+          }
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          
+
         </Typography>
       </CardContent>
       <CardActions>
-        
+
       </CardActions>
     </Card>
   );

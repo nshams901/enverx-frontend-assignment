@@ -1,45 +1,67 @@
 import { Box, Button, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from '../components/common/Modal'
 import ExpenseForm from '../components/add expense/ExpenseForm'
 import DataTable from '../components/DataTable'
-import { addExpense } from '../db/api'
+import { addExpense, deleteExpense, getExpenseList, updateExpense } from '../db/api'
 
 const headerData = [
   { text: 'Name' }, { text: 'Amount' }, { text: 'Date' }, { text: 'Label' }, { text: 'Action' }
 ]
-const rowsData = [
-  { name: 'Dinner', 'amount': 536, date: '22/05/2022', label: 'dinner' },
-  { name: 'Clothes', 'amount': 1536, date: '20/03/2022', label: 'shopping' },
-  { name: 'Dinner', 'amount': 536, date: '22/05/2022', label: 'dinner' },
-]
+
 const Dashboard = () => {
   const [state, setState] = useState({});
-  const [ formData, setFormData] = useState({})
-  const { showModal } = state
+  const [formData, setFormData] = useState({})
+  const { showModal, getList, expenseList, expense, deleteModal } = state;
 
-  const handleModal = () => setState({ ...state, showModal: !showModal });
-  const actionClick = (action) => {
+  const handleModal = () => {
+    setFormData({})
+    setState({ ...state, showModal: !showModal })
+  };
+
+  useEffect(() => {
+    getExpenseList().then((res) => {
+      const expense = res.reduce((acc, curr) => acc + (+curr.amount), 0)
+      setState({ ...state, expenseList: res, expense })
+    })
+  }, [getList]);
+
+  const actionClick = (action, value) => {
     if (action === 'edit') {
-      setState({ ...state, showModal: true })
+      setState({ ...state, showModal: true });
+      setFormData(value)
+    } else if(action === 'delete') {
+      console.log('JJJJJJJJJJJJJJJJJ');
+      setState({ ...state, deleteModal: true });
+      setFormData(value)
+    }
+  }
+console.log(deleteModal);
+  const handleSave = async () => {
+    const { name, amount, label = "", date, description = "", id } = formData;
+    if(!amount){
+      return alert('Please enter amount')
+    }
+    const payload = { name, amount, label, date, description, }
+    if (id) {
+      await updateExpense({...payload, id})
     } else {
-
+      await addExpense({ ...payload, id: String(new Date().getTime()) });
     }
+
+    setState({ ...state, getList: !getList, showModal: false })
+
   }
 
-  const handleSave = () => {
-    const { name, amount, label, date, description} = formData
-    const payload = {
-      name, amount, label, date, description
-    }
-    addExpense(formData)
+  const handleDelete = async () => {
+    const resp = await deleteExpense(formData);
+    setState({...state, deleteModal: false, getList: !getList})
   }
-  console.log(formData);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target
-
-    setFormData({...formData, [name]: value })
+    setFormData({ ...formData, [name]: value })
   }
   return (
     <>
@@ -47,21 +69,27 @@ const Dashboard = () => {
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography variant='h6'>Total expenses</Typography>
         <Typography > ( in this month )</Typography>:
-        <Typography>12,050 /-</Typography>
+        <Typography pl={1}> $ {expense} </Typography>
         <Button style={{ marginLeft: '10px' }} onClick={handleModal} variant='contained'>Add an Expense</Button>
       </Box>
 
       <Box sx={{ marginY: '1rem', textAlign: 'center' }}>
         <Typography sx={{ color: 'red' }} variant='subtitle1' margin={2}>Your recent expenses</Typography>
-        <DataTable headerData={headerData} rows={rowsData} actionClick={actionClick} />
+        <DataTable headerData={headerData} rows={expenseList} actionClick={actionClick} />
 
       </Box>
-      <Typography>Total: </Typography>
+      <Typography>Total: {expense}</Typography>
 
+      {
+        deleteModal &&
+        <Modal open={deleteModal} handleClose={ () => setState({ ...state, deleteModal: false})}
+         rightBtn={'Yes'} modalTitle={'Do you want to delete this record?'} handleSave={handleDelete}>
 
+        </Modal>
+      }
       <Modal handleSave={handleSave}
-      modalTitle={'Add your expense'} open={showModal} handleClose={handleModal}>
-        <ExpenseForm formData={ formData} handleChange={ handleChange} />
+        modalTitle={'Add your expense'} open={showModal} handleClose={handleModal}>
+        <ExpenseForm formData={formData} handleChange={handleChange} />
       </Modal>
     </>
   )

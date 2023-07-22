@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-export default function Modal( { modalTitle, open, handleClose, handleSave, children }) {
+export default function Modal( { modalTitle, open, handleClose, handleSave, children, rightBtn }) {
 //   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -34,7 +34,9 @@ export default function Modal( { modalTitle, open, handleClose, handleSave, chil
             Cancel
           </Button>
           <Button variant='contained' onClick={handleSave} autoFocus>
-            Save
+            { 
+              rightBtn ? rightBtn : 'Save'
+            }
           </Button>
         </DialogActions>
       </Dialog>

@@ -57,7 +57,7 @@ export default function DataTable({ headerData,rows, actionClick }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row, index) => (
+                    {rows?.map((row, index) => (
                         <StyledTableRow key={index}>
                             <StyledTableCell component="th" scope="row">
                                 {row.name}
@@ -66,10 +66,10 @@ export default function DataTable({ headerData,rows, actionClick }) {
                             <StyledTableCell align="right">{row.date}</StyledTableCell>
                             <StyledTableCell align="right">{row.label}</StyledTableCell>
                             <StyledTableCell align="right">
-                                <ListItemIcon style={{ cursor: 'pointer'}} onClick={() =>actionClick('edit')}>
+                                <ListItemIcon style={{ cursor: 'pointer'}} onClick={() =>actionClick('edit', row)}>
                                     <ModeEditIcon />
                                 </ListItemIcon>
-                                <ListItemIcon style={{ cursor: 'pointer'}} onClick={() => actionClick('delete')}>
+                                <ListItemIcon style={{ cursor: 'pointer'}} onClick={() => actionClick('delete', row)}>
                                     <DeleteIcon />
                                 </ListItemIcon>
                             </StyledTableCell>
