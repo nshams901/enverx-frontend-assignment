@@ -8,11 +8,12 @@ const Report = () => {
     const [state, setState] = useState({});
     const { expenseList} = state
     useEffect(() => {
-        getExpenseList().then((res) => {
-          const expense = res.reduce((acc, curr) => acc + (+curr.amount), 0)
-          setTimeout(() => window.print(), 800);
-          setState({ ...state, expenseList: res, expense })
-        })
+        // getExpenseList().then((res) => {
+        //   const expense = res.reduce((acc, curr) => acc + (+curr.amount), 0)
+        // })
+        const data = JSON.parse(sessionStorage.getItem("reportData"))
+        setState({ ...state, expenseList: data })
+        setTimeout(() => window.print(), 800);
       }, []);
   return (
     <DataTable headerData={headerData} rows={expenseList} print  />
