@@ -36,7 +36,7 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 
-export default function DataTable({ headerData,rows, actionClick }) {
+export default function DataTable({ headerData,rows, actionClick , print}) {
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -65,6 +65,8 @@ export default function DataTable({ headerData,rows, actionClick }) {
                             <StyledTableCell align="right">{row.amount}</StyledTableCell>
                             <StyledTableCell align="right">{row.date}</StyledTableCell>
                             <StyledTableCell align="right">{row.label}</StyledTableCell>
+                            {
+                                print ? null:
                             <StyledTableCell align="right">
                                 <ListItemIcon style={{ cursor: 'pointer'}} onClick={() =>actionClick('edit', row)}>
                                     <ModeEditIcon />
@@ -73,6 +75,8 @@ export default function DataTable({ headerData,rows, actionClick }) {
                                     <DeleteIcon />
                                 </ListItemIcon>
                             </StyledTableCell>
+
+                            }
                         </StyledTableRow>
                     ))}
                 </TableBody>

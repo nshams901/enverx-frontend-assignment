@@ -1,5 +1,5 @@
 import { app } from "../config/firebase";
-import { getDatabase, ref, remove, set, update } from "firebase/database";
+import { getDatabase, onValue, ref, remove, set, update } from "firebase/database";
 
 const database = getDatabase(app);
 
@@ -36,4 +36,22 @@ export const getExpenseList = async () => {
     data = Object.values(data);
 
     return data
+}
+
+
+export const addBalance = async (data) => {
+    const db = getDatabase();
+    const resp = await set(ref(db, 'balance/' + data.id), data);
+    return resp;
+}
+
+export const getBalance = async (cb) => {
+    const db = getDatabase();
+    
+    const balanceRef= ref(db, 'balance/1' )
+    const resp = await onValue(balanceRef, (snapshot) => {
+        const data = snapshot.val()
+        cb(data.balance)
+        return data
+    } )
 }

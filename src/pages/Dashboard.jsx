@@ -1,11 +1,12 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, ListItemIcon, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Modal from '../components/common/Modal'
 import ExpenseForm from '../components/add expense/ExpenseForm'
 import DataTable from '../components/DataTable'
 import { addExpense, deleteExpense, getExpenseList, updateExpense } from '../db/api'
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 
-const headerData = [
+export const headerData = [
   { text: 'Name' }, { text: 'Amount' }, { text: 'Date' }, { text: 'Label' }, { text: 'Action' }
 ]
 
@@ -31,7 +32,6 @@ const Dashboard = () => {
       setState({ ...state, showModal: true });
       setFormData(value)
     } else if(action === 'delete') {
-      console.log('JJJJJJJJJJJJJJJJJ');
       setState({ ...state, deleteModal: true });
       setFormData(value)
     }
@@ -58,6 +58,12 @@ console.log(deleteModal);
     setState({...state, deleteModal: false, getList: !getList})
   }
 
+  const handleDownload = () => {
+    let strData = JSON.stringify(expenseList);
+    sessionStorage.setItem('reportData', strData)
+    const win = window.open("/report-print", "_blank", "height=800,width=1000");
+  }
+
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -78,13 +84,16 @@ console.log(deleteModal);
         <DataTable headerData={headerData} rows={expenseList} actionClick={actionClick} />
 
       </Box>
-      <Typography>Total: {expense}</Typography>
-
+      <Typography>Total Expense: {expense}</Typography>
+      <Typography sx={{ display: 'flex', alignItems: 'center', gap: '5px'}}>Download report:
+      <ListItemIcon style={{ cursor: 'pointer', textAlign: 'center', margin: '3px'}} onClick={ handleDownload }>    
+            <DownloadForOfflineIcon/>
+      </ListItemIcon> 
+      </Typography>
       {
         deleteModal &&
         <Modal open={deleteModal} handleClose={ () => setState({ ...state, deleteModal: false})}
          rightBtn={'Yes'} modalTitle={'Do you want to delete this record?'} handleSave={handleDelete}>
-
         </Modal>
       }
       <Modal handleSave={handleSave}

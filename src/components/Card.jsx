@@ -9,8 +9,9 @@ import wallet from '../assets/wallet-pic.png'
 import { TextField } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import { addBalance } from '../db/api';
 
-export default function Cards({ data }) {
+export default function Cards({ expense, balance }) {
   const [state, setState] = React.useState({})
   const { balanceInput, amount  } = state
 
@@ -20,6 +21,15 @@ export default function Cards({ data }) {
   const handleAmount = (e) => {
     const { value } = e.target
     setState({ ...state, amount: +value })
+  }
+
+  const handleAddBalance = () => {
+    setState({ ...state, balanceInput: false})
+    const payload = {
+      id: '1',
+      balance: amount + (+balance)
+    }
+    addBalance(payload)
   }
   return (
     <Card sx={{ maxWidth: 345, backgroundImage: 'linear-gradient(to right, #ff512f, #f09819);' }}>
@@ -45,13 +55,13 @@ export default function Cards({ data }) {
                   sx={{ width: 'fit-content', padding: '5px' }}
                 />
                 <ListItemIcon >
-                  <AddCircleIcon onClick= {() => setState({ ...state, balanceInput: false})}
+                  <AddCircleIcon onClick= { handleAddBalance }
                    style={{ cursor: 'pointer'}} />
                 </ListItemIcon>
 
               </div>
               :
-              <Button onClick={handleBalance} color='success' variant='contained'>$ {(amount || 0) + (data || 0)}</Button>
+              <Button onClick={handleBalance} color='success' variant='contained'>$ {balance}</Button>
           }
         </Typography>
         <Typography variant="body2" color="text.secondary">
