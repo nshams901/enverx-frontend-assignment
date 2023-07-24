@@ -5,12 +5,14 @@ import ExpenseForm from '../components/add expense/ExpenseForm'
 import DataTable from '../components/DataTable'
 import { addExpense, deleteExpense, getExpenseList, updateExpense } from '../db/api'
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { Navigate, useNavigate } from 'react-router-dom'
 
 export const headerData = [
   { text: 'Name' }, { text: 'Amount' }, { text: 'Date' }, { text: 'Label' }, { text: 'Action' }
 ]
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const [state, setState] = useState({});
   const [formData, setFormData] = useState({})
   const { showModal, getList, expenseList, expense, deleteModal } = state;
@@ -61,7 +63,7 @@ console.log(deleteModal);
   const handleDownload = () => {
     let strData = JSON.stringify(expenseList);
     sessionStorage.setItem('reportData', strData)
-    const win = window.open("/report-print", "_blank", "height=800,width=1000");
+    const win = navigate( '/report-print');
   }
 
 
